@@ -4,7 +4,7 @@ public class MyArrayList<T extends Comparable<T>> implements MyList<T>{
     private Object[] array;
     private int size = 0, cap = 1;
 
-    MyArrayList() {
+    public MyArrayList() {
         array = null;
     }
 
@@ -13,12 +13,14 @@ public class MyArrayList<T extends Comparable<T>> implements MyList<T>{
         return new Iterator<>() {
             private int index = 0;
 
+            @Override
             public boolean hasNext() {
-                return index < size();
+                return index + 1 < size();
             }
 
+            @Override
             public T next() {
-                return get(index++);
+                return get(++index);
             }
         };
     }
