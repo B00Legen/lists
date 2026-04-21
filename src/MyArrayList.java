@@ -36,26 +36,23 @@ public class MyArrayList<T extends Comparable<T>> implements MyList<T>{
             System.arraycopy(array, 0, array2, 0, size);
             array2[size++] = item;
             array = array2;
-        } else {
+        } else
             array[size++] = item;
-        }
     }
 
     @Override
     public void set(int index, T item) {
-        if (index >= 0 && index < size) {
+        if (index >= 0 && index < size)
             array[index] = item;
-        }
     }
 
     @Override
     public void add(int index, T item) {
-        if (index < 0 || index > size) {
+        if (index < 0 || index > size)
             return;
-        }
-        if (size == 0) {
+        if (size == 0)
             array[size++] = item;
-        } else if (size == cap) {
+        else if (size == cap) {
             cap *= 2;
             Object[] array2 = new Object[cap];
             System.arraycopy(array, 0, array2, 0, index);
@@ -82,11 +79,10 @@ public class MyArrayList<T extends Comparable<T>> implements MyList<T>{
 
     @Override
     public T get(int index) {
-        if (index >= 0 && index < size) {
+        if (index >= 0 && index < size)
             return (T) array[index];
-        } else {
+        else
             return null;
-        }
     }
 
     @Override
@@ -117,12 +113,12 @@ public class MyArrayList<T extends Comparable<T>> implements MyList<T>{
         remove(size - 1);
     }
 
-    public boolean isGreater(T a, T b) {
+    private boolean isGreater(T a, T b) {
         // Returns true if a > b
         return a.compareTo(b) > 0;
     }
 
-    public void swap(int a, int b) {
+    private void swap(int a, int b) {
         T temp = get(a);
         array[a] = get(b);
         array[b] = temp;
@@ -132,32 +128,26 @@ public class MyArrayList<T extends Comparable<T>> implements MyList<T>{
     public void sort() {
         for(int i = 0; i < size; i++) {
             int pos = 0;
-            for (int j = 1; j < size - i; j++) {
-                if (isGreater(get(j), get(pos))) {
+            for (int j = 1; j < size - i; j++)
+                if (isGreater(get(j), get(pos)))
                     pos = j;
-                }
-            }
             swap(pos, size - i - 1);
         }
     }
 
     @Override
     public int indexOf(Object object) {
-        for (int i = 0; i < size; i++) {
-            if (get(i) == object) {
+        for (int i = 0; i < size; i++)
+            if (get(i) == object)
                 return i;
-            }
-        }
         return -1;
     }
 
     @Override
     public int lastIndexOf(Object object) {
-        for (int i = size - 1; i >= 0; i--) {
-            if (get(i) == object) {
+        for (int i = size - 1; i >= 0; i--)
+            if (get(i) == object)
                 return i;
-            }
-        }
         return -1;
     }
 

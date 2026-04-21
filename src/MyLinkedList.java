@@ -1,7 +1,8 @@
 import java.util.Iterator;
+import java.util.Objects;
 
 public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
-    static class MyNode<T> {
+    private class MyNode<T> {
         T data;
         MyNode<T> next, prev;
 
@@ -35,9 +36,9 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
     @Override
     public void add(T item) {
         MyNode<T> newNode = new MyNode<>(item);
-        if (head == null) {
+        if (head == null)
             head = tail = newNode;
-        } else {
+        else {
             tail.next = newNode;
             newNode.prev = tail;
             tail = newNode;
@@ -48,19 +49,20 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
     @Override
     public void set(int index, T item) {
         MyNode<T> cur = head;
-        for (int i = 1; i < index; i++) {
+        for (int i = 0; i < index; i++) {
+            if (cur == null)
+                break;
             cur = cur.next;
         }
-        if (cur != null) {
+        if (cur != null)
             cur.data = item;
-        }
     }
 
     @Override
     public void add(int index, T item) {
-        if (head == null) {
+        if (head == null)
             add(item);
-        } else if (index == 0) {
+        else if (index == 0) {
             MyNode<T> newNode = new MyNode<>(item);
             head.prev = newNode;
             newNode.next = head;
@@ -68,19 +70,21 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
             size++;
         } else {
             MyNode<T> cur = head;
-            //we put new node after [cur]. That's why we start loop at 1
-            for (int i = 1; i < index; i++) {
-                cur = cur.next;
-            }
+            //we put new node right after cur (which should have index - 1)
+            for (int i = 0; i < index - 1; i++) { //i - position of cur node
+                if (cur == null)
+                    break;
+                cur = cur.next; // move node to the right (position++)
+            } // loop breaks when i (position) = index - 1
             if (cur != null) {
+                // We add it to the right (next position)
                 MyNode<T> newNode = new MyNode<>(item);
                 newNode.prev = cur;
                 if (cur != tail) {
                     newNode.next = cur.next;
                     (cur.next).prev = newNode;
-                } else {
+                } else
                     tail = newNode;
-                }
                 cur.next = newNode;
                 size++;
             }
@@ -100,47 +104,51 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
     @Override
     public T get(int index) {
         MyNode<T> cur = head;
-        for (int i = 1; i < index; i++) {
+        for (int i = 0; i < index; i++) {
+            if (cur == null)
+                break;
             cur = cur.next;
         }
-        return cur.data;
+        return (cur == null ? null : cur.data);
     }
 
     @Override
     public T getFirst() {
-        return head.data;
+        return (head == null ? null : head.data);
     }
 
     @Override
     public T getLast() {
-        return tail.data;
+        return (tail == null ? null : tail.data);
     }
 
     @Override
     public void remove(int index) {
-        if (size == 0) {
+        if (size == 0)
             return;
-        }
-        if (index == 0) {
-            head = head.next;
-        }
-        if (index == size - 1) {
-            tail = tail.prev;
-        }
         MyNode<T> cur = head;
-        for (int i = 1; i < index; i++) {
+        for (int i = 1; i <= index; i++) {
+            if (cur == null)
+                break;
             cur = cur.next;
         }
-        (cur.prev).next = cur.next;
-        (cur.next).prev = cur.prev;
-        size--;
+        if (cur != null) {
+            if (cur != head)
+                (cur.prev).next = cur.next;
+            if (cur != tail)
+                (cur.next).prev = cur.prev;
+            size--;
+        }
+        if (index == 0)
+            head = head.next;
+        if (index == size - 1)
+            tail = tail.prev;
     }
 
     @Override
     public void removeFirst() {
-        if (size == 0) {
+        if (size == 0)
             return;
-        }
         head = head.next;
         head.prev = null;
         size--;
@@ -148,20 +156,19 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
 
     @Override
     public void removeLast() {
-        if (size == 0) {
+        if (size == 0)
             return;
-        }
         tail = tail.prev;
         tail.next = null;
         size--;
     }
 
-    public boolean isGreater(T a, T b) {
+    private boolean isGreater(T a, T b) {
         // Returns true if a > b
         return a.compareTo(b) > 0;
     }
 
-    public void swap(MyNode<T> a, MyNode<T> b) {
+    private void swap(MyNode<T> a, MyNode<T> b) {
         T temp = a.data;
         a.data = b.data;
         b.data = temp;
@@ -171,40 +178,36 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
     public void sort() {
         for (int i = 1; i < size; i++) {
             MyNode<T> cur = head;
-            for (int j = 1; j <= size - i; j++) {
-                if (isGreater(cur.data, (cur.next).data)) {
+            for (int j = 0; j <= size - i; j++)
+                if (isGreater(cur.data, (cur.next).data))
                     swap(cur, cur.next);
-                }
-            }
+                else
+                    cur = cur.next;
         }
     }
 
     @Override
     public int indexOf(Object object) {
-        if (head.data == object) {
+        if (Objects.equals(head.data, object))
             return 0;
-        }
         MyNode<T> cur = head;
         for (int i = 1; i < size; i++) {
             cur = cur.next;
-            if (cur.data == object) {
+            if (Objects.equals(cur.data, object))
                 return i;
-            }
         }
         return -1;
     }
 
     @Override
     public int lastIndexOf(Object object) {
-        if (tail.data == object) {
+        if (Objects.equals(tail.data, object))
             return size - 1;
-        }
         MyNode<T> cur = tail;
         for (int i = size - 2; i >= 0; i--) {
             cur = cur.prev;
-            if (cur.data == object) {
+            if (Objects.equals(cur.data, object))
                 return i;
-            }
         }
         return -1;
     }
@@ -216,15 +219,13 @@ public class MyLinkedList<T extends Comparable<T>> implements MyList<T> {
 
     @Override
     public Object[] toArray() {
-        if (size == 0) {
+        if (size == 0)
             return null;
-        }
         Object[] arr = new Object[size];
         MyNode<T> cur = head;
-        arr[0] = cur.data;
-        for (int i = 1; i < size(); i++) {
-            cur = cur.next;
+        for (int i = 0; i < size(); i++) {
             arr[i] = cur.data;
+            cur = cur.next;
         }
         return arr;
     }
